@@ -54,7 +54,7 @@ class IntroductionSlider extends StatefulWidget {
   final Widget? done;
 
   /// Redirect to another page, When done button is pressed.
-  final Widget? onDone;
+  final Function() onDone;
   const IntroductionSlider({
     Key? key,
     required this.items,
@@ -156,18 +156,22 @@ class _IntroductionSliderState extends State<IntroductionSlider> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                widget.items[index].image as Widget,
+                ConstrainedBox(
+                    constraints: BoxConstraints.expand(
+                        height: MediaQuery.of(context).size.height / 2),
+                    child: widget.items[index].image),
                 Text(
-                  "${widget.items[index].title}",
+                  widget.items[index].title,
                   style: widget.titleTextStyle,
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
                   child: Text(
-                    "${widget.items[index].description}",
+                    widget.items[index].description,
                     style: widget.descriptionTextStyle,
-                    textAlign: TextAlign.justify,
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],
@@ -221,11 +225,7 @@ class _IntroductionSliderState extends State<IntroductionSlider> {
                 ),
                 Button(
                   onPressed: lastIndex
-                      ? () => Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => widget.onDone!,
-                            ),
-                          )
+                      ? widget.onDone
                       : () => pageController.nextPage(
                             duration: const Duration(seconds: 1),
                             curve: Curves.easeInOut,
